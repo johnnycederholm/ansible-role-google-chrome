@@ -1,0 +1,23 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: Install dependencies
+  ansible.builtin.apt:
+    name: gnupg
+    state: present
+
+- name: Add public key
+  ansible.builtin.get_url:
+    url: https://dl.google.com/linux/linux_signing_key.pub
+    dest: /etc/apt/keyrings/google-chrome.asc
+    mode: "644"
+
+- name: Add apt repository
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/google-chrome.asc] http://dl.google.com/linux/chrome/deb/ stable main
+    state: present
+    update_cache: true
+
+- name: Install latest version
+  ansible.builtin.apt:
+    name: google-chrome-stable
+    state: present
