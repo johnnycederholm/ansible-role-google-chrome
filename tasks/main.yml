@@ -5,19 +5,18 @@
     name: gnupg
     state: present
 
-- name: Add public key
+- name: Download latest Google Chrome package
   ansible.builtin.get_url:
-    url: https://dl.google.com/linux/linux_signing_key.pub
-    dest: /etc/apt/keyrings/google-chrome.asc
+    url: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    dest: /tmp
     mode: "644"
 
-- name: Add apt repository
-  ansible.builtin.apt_repository:
-    repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/google-chrome.asc] http://dl.google.com/linux/chrome/deb/ stable main
-    state: present
-    update_cache: true
-
-- name: Install latest version
+- name: Install Google Chrome
   ansible.builtin.apt:
-    name: google-chrome-stable
+    deb: /tmp/google-chrome-stable_current_amd64.deb
     state: present
+
+- name: Remove downloaded package
+  ansible.builtin.file:
+    path: /tmp/google-chrome-stable_current_amd64.deb
+    state: absent
